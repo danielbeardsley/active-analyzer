@@ -1,0 +1,14 @@
+LogAnalyzer
+ - Stats
+ - StatHash
+ - Processor
+   + ConsumeFile returns batch record
+ - Mixins
+   + LogFormat
+getProcessId returns either a process ID, or something unique to the ruby thread that created the log entry.
+getEventType returns one of:
+	{:type => :completed, total: seconds, db: seconds, render: seconds},
+	{:type => :processing, :action => "action_being_processed"},
+	{:type => :rendered, :time => seconds},
+	{:type => :sql, :time => seconds}
+   + MetaData

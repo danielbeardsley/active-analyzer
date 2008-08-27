@@ -1,0 +1,2 @@
+class BatchController < BaseController
+end

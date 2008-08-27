@@ -1,0 +1,6 @@
+CREATE TABLE applications ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar(255) DEFAULT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL);
+CREATE TABLE batches ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL, "first_event" datetime NOT NULL, "last_event" datetime NOT NULL, "line_count" integer DEFAULT NULL, "processing_time" integer DEFAULT NULL, "application_id" integer DEFAULT NULL);
+CREATE TABLE event_logs ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "batch_id" integer NOT NULL, "event_id" integer NOT NULL, "event_type" varchar(255) NOT NULL, "render_count" integer DEFAULT NULL, "mean_time" float DEFAULT NULL, "max_time" float DEFAULT NULL, "min_time" float DEFAULT NULL, "median_time" float DEFAULT NULL, "std_dev" float DEFAULT NULL, "total_time" float DEFAULT NULL);
+CREATE TABLE requests ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL);
+CREATE TABLE schema_info (version integer);
+CREATE TABLE templates ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "created_at" datetime DEFAULT NULL, "updated_at" datetime DEFAULT NULL);
