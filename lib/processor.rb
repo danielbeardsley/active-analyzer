@@ -9,10 +9,11 @@ class Processor
     @input = input_stream
     
     create_batch_record
-    
+
+puts "File Processed: " + (Benchmark.measure {
     build_stats
-   
-    create_template_records
+}).to_s
+    create_request_records
     create_render_records
     
     @batch.save!
@@ -28,7 +29,10 @@ protected
   
   def build_stats
     start_time = Time.now
-    @request_stats = StatHash.new
+    @request_total = StatHash.new    
+    @request_db = StatHash.new
+    @request_render = StatHash.new    
+    @request_action = StatHash.new
     @render_stats = StatHash.new      
     last_actions = Hash.new
     line_count = 0
@@ -59,8 +63,12 @@ begin
           
           when :completed
             action = last_actions[pid]
-            @request_stats.add(action, info[:total], line) if not action.nil?
-          
+            if not action.nil?
+              @request_total.add(action, info[:total], line)
+              @request_render.add(action, info[:render], line)
+              @request_db.add(action, info[:db], line)
+              @request_action.add(action, info[:total] - (info[:db] + info[:render]), line)
+            end
           when :rendered
             @render_stats.add(info[:template], info[:time], line)
           
@@ -69,6 +77,8 @@ begin
 
         line_count += 1
       end
+      
+      puts "lines: #{line_count} bytes:#{(@input.pos / 1024).ceil}KB" if(line_count % 2000) == 0
       
       last_line = line
     end
@@ -83,38 +93,49 @@ begin
   end
   
   
-  def create_template_records
+  def create_request_records
     requests = Hash.new
-    Request.find(:all).each{|req| requests[req.action] = req}
+    Request.find_all_by_application_id(@app.id).each do |req|
+      requests[req.action] ||= {}
+      requests[req.action][req.time_source] = req
+    end
     
-    @request_stats.stats.map { |action, stat|
-      req_rec = requests[action] || (requests[action] = Request.new(:action => action))
-      event_log = stat.to_event_log
-      event_log.log_source = req_rec
+    @request_total.stats.each do|action, stat|
+      req_hash = requests[action] ||= {}
       
-      update_first_last_event_times(@request_stats, req_rec, action)      
-      req_rec.save
+      {:total => @request_total,
+        :db => @request_db,
+        :render => @request_render,
+        :action => @request_action}.each do |time_source, stats_hash|
+
+        req_rec = req_hash[time_source.to_s] ||= Request.new(:action => action, :time_source => time_source.to_s, :application_id => @app.id)
+        update_first_last_event_times(stats_hash, req_rec, action)
       
-      @batch.event_logs << event_log
-      event_log
-    }
+        event_log = stats_hash.stats[action].to_event_log
+        event_log.log_source = req_rec
+        
+        @batch.event_logs << event_log
+      end
+      
+      requests[action].each_value &:save
+    end
   end
   
   def create_render_records
     templates = Hash.new
-    Template.find(:all).each{|tmp| templates[tmp.path] = tmp}
+    Template.find_all_by_application_id(@app.id).each{|tmp| templates[tmp.path] = tmp}
     
-    @render_stats.stats.map { |path, stat|
-      tmp_rec = templates[path] || (templates[path] = Template.new(:path => path))
+    @render_stats.stats.each { |path, stat|
+      tmp_rec = templates[path] ||= Template.new(:path => path, :application_id => @app.id)
       event_log = stat.to_event_log
       event_log.log_source = tmp_rec
 
       update_first_last_event_times(@render_stats, tmp_rec, path)
-      tmp_rec.save
+      tmp_rec.save!
       
       @batch.event_logs << event_log
-      event_log
     }
+    
   end
   
   def update_first_last_event_times(stathash, rec, key)

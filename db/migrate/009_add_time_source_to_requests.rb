@@ -1,7 +1,7 @@
 class AddTimeSourceToRequests < ActiveRecord::Migration
   def self.up
-    add_column :requests, :time_source, :integer, :null => false
-    Request.connection.update("update requests set time_source = 0")
+    add_column :requests, :time_source, :string, :limit=> 16, :null => false
+    Request.connection.update("update requests set time_source = 'total'")
   end
 
   def self.down

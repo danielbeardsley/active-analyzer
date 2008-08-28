@@ -44,8 +44,8 @@ ActiveRecord::Schema.define(:version => 9) do
     t.string   "action"
     t.datetime "first_event"
     t.datetime "most_recent_event"
-    t.integer  "application_id",    :null => false
-    t.integer  "time_source",       :null => false
+    t.integer  "application_id",                                  :null => false
+    t.string   "time_source",       :limit => 16, :default => "", :null => false
   end
 
   create_table "templates", :force => true do |t|
