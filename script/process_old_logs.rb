@@ -1,7 +1,7 @@
 require(File.join(File.dirname(__FILE__), '../config', 'environment'))
 require 'zlib'
 
-OLD_LOGS = '/var/log/wikiwalki/old-logs/*.gz'
+OLD_LOGS = '/var/log/wikiwalki/old_logs/*.gz'
 
 def process_zipped_log(filename)
     @processor.consume_file(Zlib::GzipReader.open(filename))
