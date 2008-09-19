@@ -130,10 +130,19 @@ log.gsub!('Jan ', 'Aug ')
     #print_models
   end
 
+  def test_duplicate_batch
+    p = Processor.new(applications(:one))
+    p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/minimal.log'))
+    assert_raise RuntimeError do
+      p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/minimal.log'))
+    end
+    #print_models
+  end
+
   def test_full_log
 puts Benchmark.measure {
     p = Processor.new(applications(:one))
-    p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/production.log'))
+    #p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/production.log'))
 }
     #print_models
   end

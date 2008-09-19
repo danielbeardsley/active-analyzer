@@ -54,7 +54,12 @@ begin
         next
       end
 
-      first_line = line if not first_line
+      if not first_line 
+        first_line = line
+        if Batch.exists?(:first_event => getTime(first_line), :application_id => @app.id)
+          raise 'Batch has already been processed'
+        end
+      end
       last_line = line       
 
       repeats.times do
