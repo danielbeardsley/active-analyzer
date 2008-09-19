@@ -36,6 +36,7 @@ protected
     @render_stats = StatHash.new      
     last_actions = Hash.new
     line_count = 0
+    bytes = 0
     first_line = last_line = nil
 begin
     while line = @input.gets
@@ -76,9 +77,10 @@ begin
         end
 
         line_count += 1
+        bytes += line.length
       end
       
-      puts "lines: #{line_count} bytes:#{(@input.pos / 1024).ceil}KB" if(line_count % 2000) == 0
+      puts "lines: #{line_count} bytes:#{(bytes / 1024).ceil}KB" if(line_count % 2000) == 0
       
       last_line = line
     end
