@@ -3,7 +3,7 @@ class Batch < ActiveRecord::Base
   belongs_to :application
   
   def lines_per_second
-    self.line_count / self.processing_time if self.processing_time? and self.processing_time > 0
-    0
+    return 0 if self.line_count.nil? or self.processing_time.nil? or self.processing_time <= 0
+    self.line_count / (self.processing_time / 1000)
   end
 end
