@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'lib/stats'
+require 'lib/stat'
 
 class StatTest < ActiveSupport::TestCase
   def test_stats
@@ -7,7 +7,7 @@ class StatTest < ActiveSupport::TestCase
       "Stat.#{method} is incorrect"
     end
     
-    stat = ActiveAnalyzer::Stat.new(30)
+    stat = Stat.new(30)
     stat.add(5)
     stat.add(6)
     stat.add(8)

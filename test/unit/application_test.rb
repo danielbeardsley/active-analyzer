@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ApplicationTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
   def test_batches_relation
     app = Application.find(2)
     batches = app.batches

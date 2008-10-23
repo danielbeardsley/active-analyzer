@@ -2,6 +2,9 @@ require File.dirname(__FILE__) + '/../test_helper'
 require 'stringio'
 
 class ProcessorTest < ActiveSupport::TestCase
+  def get_processor
+    Processor.new(Application.find_or_create_by_name('ProcessorTestApp'))
+  end  
   
   def test_log_with_repeat
     log = <<R_LOG
@@ -9,7 +12,7 @@ Jul  1 06:28:47 rails ww_log[28524]: Rendered /shared/_tags_js.html.erb (0.01165
 Jul  1 06:28:47 rails ww_log[28524]: Rendered mytemplate/_list_column_headings (0.02666)
 Jul  1 06:28:47 rails last messaged repeated 15 times
 R_LOG
-    p = Processor.new(applications(:one))
+    p = get_processor
     p.consume_file(StringIO.new(log))
     temp_id = Template.find_by_path('mytemplate/_list_column_headings').id
     e = EventLog.find_by_log_source_id(temp_id)
@@ -37,7 +40,7 @@ Jul  1 06:28:47 rails ww_log[28520]: Rendered shared/_top (10.0)
 Jul  1 06:28:47 rails ww_log[28524]: Completed in 3.0 (3 reqs/sec) | Rendering: 1.25 (29%) | DB: 1.25 (59%) | 200 OK [http://samplelog.com/mytemplate]
 Jul  1 06:28:47 rails ww_log[28520]: Completed in 1.0 (3 reqs/sec) | Rendering: 1.0 (29%) | DB: 1.0 (59%) | 200 OK [http://samplelog.com/mytemplate]
 R_LOG
-    p = Processor.new(applications(:one))
+    p = get_processor
     p.consume_file(StringIO.new(log))
 
     temp_id = Request.find_by_action_and_time_source('MyController#index', 'total').id
@@ -60,7 +63,7 @@ Jul  1 06:28:47 rails ww_log[58521]: Completed in 9.0 (3 reqs/sec) | Rendering: 
 Jul  1 06:28:47 rails ww_log[28524]: Completed in 3.0 (3 reqs/sec) | Rendering: 1.25 (29%) | DB: 1.0 (59%) | 200 OK [http://samplelog.com/mytemplate]
 Jul  1 06:28:47 rails ww_log[28520]: Completed in 3.0 (3 reqs/sec) | Rendering: 1.0 (29%) | DB: 2.0 (59%) | 200 OK [http://samplelog.com/mytemplate]
 R_LOG
-    p = Processor.new(applications(:one))
+    p = get_processor
     p.consume_file(StringIO.new(log))
 
     {:index => {:total => 3, :db => 1.0, :render => 1.25, :action => 0.75},
@@ -88,7 +91,7 @@ Jul  2 06:28:47 rails ww_log[28520]: Rendered shared/_top (10.0)
 Jul  1 06:28:47 rails ww_log[28524]: Completed in 3.0 (3 reqs/sec) | Rendering: 3.0 (29%) | DB: 3.0 (59%) | 200 OK [http://samplelog.com/mytemplate]
 Jul  2 06:28:47 rails ww_log[28520]: Completed in 1.0 (3 reqs/sec) | Rendering: 1.0 (29%) | DB: 1.0 (59%) | 200 OK [http://samplelog.com/mytemplate]
 R_LOG
-    p = Processor.new(applications(:one))
+    p = get_processor
     p.consume_file(StringIO.new(log))
     r = Request.find_by_action('MyController#index')
     assert_equal 'Tue Jul 01 06:28:47 -0700 2008', r.first_event.to_s, "first_event is wrong"
@@ -125,13 +128,13 @@ log.gsub!('Jan ', 'Aug ')
   end  
   
   def test_minimal_log
-    p = Processor.new(applications(:one))
+    p = get_processor
     #p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/minimal.log'))
     #print_models
   end
 
   def test_duplicate_batch
-    p = Processor.new(applications(:one))
+    p = get_processor
     p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/minimal.log'))
     assert_raise RuntimeError do
       p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/minimal.log'))
@@ -141,7 +144,7 @@ log.gsub!('Jan ', 'Aug ')
 
   def test_full_log
 puts Benchmark.measure {
-    p = Processor.new(applications(:one))
+    p = get_processor
     #p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/production.log'))
 }
     #print_models
@@ -149,7 +152,7 @@ puts Benchmark.measure {
 
   def test_slimtimer_log
 puts Benchmark.measure {    
-    p = Processor.new(applications(:one))
+    p = get_processor
     #p.consume_file(File.new(File.dirname(__FILE__) + '/../mocks/test/slimtimer.log'))
  }
 #    print_models
@@ -157,7 +160,7 @@ puts Benchmark.measure {
 
   def test_huge_log
 puts Benchmark.measure {    
-    p = Processor.new(applications(:one))
+    p = get_processor
     #p.consume_file(File.new(File.dirname(__FILE__) + '/../../../slimtimer.log.0'))
  }
 # print_models
