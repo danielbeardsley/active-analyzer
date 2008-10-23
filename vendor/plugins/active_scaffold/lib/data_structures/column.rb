@@ -211,7 +211,7 @@ module ActiveScaffold::DataStructures
     def initialize_sort
       if self.virtual?
         # we don't automatically enable method sorting for virtual columns because it's slow, and we expect fewer complaints this way.
-        self.sort = false
+        self.sort = {:sql => self.name.to_s}
       else
         if self.singular_association?
           self.sort = {:method => "#{self.name}.to_s"}

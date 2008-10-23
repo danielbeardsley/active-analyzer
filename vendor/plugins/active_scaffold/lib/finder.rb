@@ -95,18 +95,27 @@ module ActiveScaffold
       # we build the paginator differently for method- and sql-based sorting
       if options[:sorting] and options[:sorting].sorts_by_method?
         pager = ::Paginator.new(count, options[:per_page]) do |offset, per_page|
-          sorted_collection = sort_collection_by_column(klass.find(:all, finder_options), *options[:sorting].first)
+          sorted_collection = sort_collection_by_column(find_all_with_options(finder_options), *options[:sorting].first)
           sorted_collection.slice(offset, per_page)
         end
       else
         pager = ::Paginator.new(count, options[:per_page]) do |offset, per_page|
-          klass.find(:all, finder_options.merge(:offset => offset, :limit => per_page))
+          find_all_with_options(finder_options.merge(:offset => offset, :limit => per_page))
         end
       end
 
       pager.page(options[:page])
     end
 
+    def find_all_with_options(options)
+      klass = active_scaffold_config.model      
+      if(respond_to?(:active_scaffold_finder_sql))
+        klass.find_by_sql(active_scaffold_finder_sql(options))
+      else
+        klass.find(:all, options)
+      end
+    end
+    
     # TODO: this should reside on the model, not the controller
     def merge_conditions(*conditions)
       c = conditions.find_all {|c| not c.nil? and not c.empty? }
