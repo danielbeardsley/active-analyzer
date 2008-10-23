@@ -1,11 +1,11 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-# one:
-#   column: value
-#
-# two:
-#   column: value
-
-one:
- id: 1
- name: TestApp1
+--- 
+application_1: 
+  name: TestApp1
+  updated_at: 2008-09-19 03:05:54 -07:00
+  id: 1
+  created_at: 2008-09-19 03:05:54 -07:00
+application_2: 
+  name: TestApp2
+  updated_at: 2008-09-19 06:07:29 -07:00
+  id: 2
+  created_at: 2008-09-19 06:07:29 -07:00

@@ -1,4 +1,4 @@
-class EventLogController < BaseController
+class EventLogsController < BaseController
   def list
     @event_logs = EventLog.find(:all, :conditions => {:batch_id => params[:batch], :log_source_type => params[:type]})
   

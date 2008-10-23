@@ -1,0 +1,31 @@
+<div id='app_header'>
+	<span style='font-size:150%;color:#999;'>Application: </span><span id='app_name'><%= @app.name %></span><a id='edit_app_name'>edit</a>
+</div>
+<div id='app_content'>
+	<div id='requests' class='section'>
+		<div class='section_title'>Requests</div>
+		<div class='section_content'><%= render :active_scaffold => 'requests', :constraints => {:application_id => @app.id, :time_source => 'total'} %></div>
+	</div>
+	<div id='templates' class='section'>
+		<div class='section_title'>Templates</div>
+		<div class='section_content'><%= render :active_scaffold => 'templates', :constraints => {:application_id => @app.id} %></div>
+	</div>
+	<div id='graph_panel' class='section'><div id='graph'></div></div>
+</div>
+<script type='text/javascript'>
+var f = Flotr.draw(
+	$('graph'), [
+	{ // => first series
+	    data: [ [0, 0], [1, 2], [2, 4], [3, 6], [4, 8] ],
+	    label: "y = 2x",
+	    lines: {show: true, fill: true},
+	    points: {show: true}
+	},
+	{ // => second series
+	    data: [ [0, 2.5], [1, 5.5], [2, 8.5], [3, 11.5], [4, 14.5] ],
+	    label: "y = 2.5 + 3x"
+	}]
+);
+
+
+</script>

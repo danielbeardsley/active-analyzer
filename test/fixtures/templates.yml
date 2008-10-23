@@ -1,7 +1,37 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-# one:
-#   column: value
-#
-# two:
-#   column: value
+--- 
+template_1: 
+  application_id: 2
+  first_event: 2008-07-01 06:28:47 -07:00
+  id: 53
+  most_recent_event: 2008-10-04 01:15:46 -07:00
+  path: mytrails/_list
+template_2: 
+  application_id: 2
+  first_event: 2008-07-01 06:28:47 -07:00
+  id: 65
+  most_recent_event: 2008-10-04 06:18:37 -07:00
+  path: shared/_top
+template_3: 
+  application_id: 2
+  first_event: 2008-07-01 12:55:41 -07:00
+  id: 71
+  most_recent_event: 2008-10-04 03:55:20 -07:00
+  path: account/_remotelogin
+template_4: 
+  application_id: 2
+  first_event: 2008-07-01 06:28:47 -07:00
+  id: 74
+  most_recent_event: 2008-10-04 06:18:37 -07:00
+  path: shared/_account_links
+template_5: 
+  application_id: 2
+  first_event: 2008-07-01 06:31:58 -07:00
+  id: 76
+  most_recent_event: 2008-10-04 06:18:37 -07:00
+  path: shared/_panel_toggle
+template_6: 
+  application_id: 2
+  first_event: 2008-07-01 06:31:58 -07:00
+  id: 77
+  most_recent_event: 2008-10-04 06:18:37 -07:00
+  path: shared/_tabs

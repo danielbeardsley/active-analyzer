@@ -1,2 +1,0 @@
-class BatchController < BaseController
-end

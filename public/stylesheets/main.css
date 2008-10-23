@@ -1,0 +1,52 @@
+body {
+	margin: 0px 20px;
+	font-family:Arial;
+}
+
+#header{
+	height:80px;
+	border-bottom:2px solid #ddd;
+	margin-top:20px;
+}
+
+#title{
+	font-size:200%;
+	font-weight:bold;
+	text-decoration:none;
+	color:black;
+}
+
+
+#app_header{
+	padding:10px 30px;
+	border-bottom:3px solid #f0f0f0;
+	margin-bottom: 10px;
+}
+#app_name{
+	font-family: Arial Black;
+	font-size: 200%;
+	margin: 0px 15px;
+	
+}
+#edit_app_name{
+	color:#777;
+	margin-left:10px;
+}
+
+
+.section{
+	border:2px solid #c62;
+	margin:10px;
+	width:40%;
+	float:left;
+}
+.section_content{
+	padding:0px 10px;
+}
+.section_title{
+	background-color:#d72;
+	padding: 3px 20px;
+	font-size:120%;
+	font-weight:bold;
+	color:white;
+}
