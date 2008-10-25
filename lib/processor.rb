@@ -28,6 +28,7 @@ protected
   end
   
   def build_stats
+
     start_time = Time.now
     @request_total = StatHash.new    
     @request_db = StatHash.new
@@ -38,7 +39,7 @@ protected
     line_count = 0
     bytes = 0
     first_line = last_line = nil
-begin
+    begin
     while line = @input.gets
 
       repeats = getRepeatedCount(line)
@@ -90,7 +91,7 @@ begin
       last_line = line
     end
   rescue  Exception => e   
-    puts "Error at line#:#{line_count}  line:#{line}"
+    puts "Error '#{e}' at line#:#{line_count}  line:#{line}"
     raise e
   end    
     @batch.first_event = getTime(first_line)
