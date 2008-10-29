@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>Active Analyzer</title>
-		<%= javascript_include_tag 'protoaculous' %>
+		<%= javascript_include_tag 'protoaculous', "flotr#{RAILS_ENV == 'development' ? '.debug' : ''}-0.1.0alpha", 'application' %>
 		<%= stylesheet_link_tag 'main' %>
 		<%= active_scaffold_includes %>
 	</head>

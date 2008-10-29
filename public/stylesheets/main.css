@@ -16,6 +16,17 @@ body {
 	color:black;
 }
 
+#graph{
+	width:700px;
+	height:300px;
+	font-size:12px;
+}
+
+#graph_panel{
+	width:auto;
+	padding:10px;
+}
+
 
 #app_header{
 	padding:10px 30px;

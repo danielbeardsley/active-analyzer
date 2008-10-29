@@ -21,13 +21,15 @@ class EventLog < ActiveRecord::Base
    
     metric = options[:metric] || :total
     function = options[:aggregate] || :total
+    function = function.to_sym
+    metric = metric.to_sym
     
     if METRICS.include? metric
       request = Request.first(:conditions => {
                                   :application_id => options[:application],
-                                  :action => options[:action],
+                                  :action => options[:action_name],
                                   :time_source => metric.to_s})
-      raise "No Such Request record '#{options[:action]}' metric:#{metric}" if request.nil?
+      raise "No Such Request record '#{options[:action_name]}' metric:#{metric}" if request.nil?
     else
       raise "Invalid metric, expected one of : #{METRICS.inspect}" 
     end
@@ -39,7 +41,7 @@ class EventLog < ActiveRecord::Base
     end
     
     sql = <<EOQ
-    SELECT batches.last_event as time, event_logs.#{column}
+    SELECT unix_timestamp(batches.last_event) as time, event_logs.#{column}
     FROM event_logs
     INNER JOIN batches ON event_logs.batch_id = batches.id
               AND batches.first_event >= '#{from.to_formatted_s(:db)}'

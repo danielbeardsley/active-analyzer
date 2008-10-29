@@ -10,7 +10,7 @@ class EventLogTest < ActiveSupport::TestCase
   
   context "EventLog.get_historical_data for requests" do
     setup do
-      @options = {:application => 1, :action => 'Controller#action0', :from => 3.days.ago.beginning_of_day}
+      @options = {:application => 1, :action_name => 'Controller#action0', :from => 3.days.ago.beginning_of_day}
     end
 
 
