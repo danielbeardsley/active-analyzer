@@ -1,3 +1,7 @@
+<% javascript_tag do %>
+var Application_ID = <%= params[:id] %>;
+<% end %>
+
 <div id='app_header'>
 	<span style='font-size:150%;color:#999;'>Application: </span><span id='app_name'><%= @app.name %></span><a id='edit_app_name'>edit</a>
 </div>
@@ -10,5 +14,12 @@
 		<div class='section_title'>Templates</div>
 		<div class='section_content'><%= render :active_scaffold => 'templates', :constraints => {:application_id => @app.id} %></div>
 	</div>
-	<div id='graph_panel' class='section'><div id='graph'></div></div>
+
+	<div id='graph_panel' class='section'>
+		<div>
+			Metric: <select id='metric'><%= options_for_select(EventLog::METRICS.map{|m| [m.to_s.camelize,m]}) %></select>
+			Function: <select id='aggregate_selector'><%= options_for_select(EventLog::FUNCTIONS_TO_COLUMNS.map{|key, value| [key.to_s.camelize,key.to_s]}) %></select>
+		</div>
+		<div id='graph'></div>
+	</div>
 </div>

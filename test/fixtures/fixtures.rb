@@ -45,7 +45,7 @@ class CustomFixtures
   def create_applications
     2.times do |app_index|
       puts "Creating Application ... "
-      Application.create(:name => "Application #{app_index}")
+      Application.create(:name => "Application #{app_index}", :id => app_index)
     end
   end
 

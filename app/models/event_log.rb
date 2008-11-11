@@ -12,26 +12,37 @@ class EventLog < ActiveRecord::Base
                          :count => 'event_count',
                          :std_dev => 'std_dev'}
 
-  def self.get_historical_data_for(options)
+  def self.get_historical_data_for(options = {})
 
-    from = options[:from] || 2.weeks.ago
+    from = options[:from] || 8.weeks.ago
     to = options[:to] || Time.now
     from = from.beginning_of_day
     to = to.end_of_day
    
-    metric = options[:metric] || :total
-    function = options[:aggregate] || :total
-    function = function.to_sym
-    metric = metric.to_sym
+    log_source_name = options[:action_name] ? :request : :template
+    log_source_class = log_source_name.to_s.camelize.constantize
+    metric = (options[:metric] || :total).to_sym
+    function = (options[:aggregate] || :total).to_sym
     
-    if METRICS.include? metric
-      request = Request.first(:conditions => {
-                                  :application_id => options[:application],
-                                  :action => options[:action_name],
-                                  :time_source => metric.to_s})
-      raise "No Such Request record '#{options[:action_name]}' metric:#{metric}" if request.nil?
-    else
-      raise "Invalid metric, expected one of : #{METRICS.inspect}" 
+    conditions = {:application_id => options[:application]}
+      
+    case log_source_name
+      when :request  then
+        conditions.merge! :action => options[:action_name], :time_source => metric.to_s
+      when :template then
+        conditions[:path] = options[:template]
+    end
+    
+    raise 'An action name or template path must be specified' if !conditions[:action] && !conditions[:path]
+    raise "Invalid metric, expected one of : #{METRICS.inspect}" if !METRICS.include? metric
+    
+    log_source = log_source_class.first(:conditions => conditions)
+    
+    if log_source.nil?
+      case log_source_name
+        when :request  then raise "No Such Request record '#{options[:action_name]}' for metric:#{metric}"
+        when :template then raise "No Such Template record '#{options[:template]}'"
+      end
     end
 
     if FUNCTIONS_TO_COLUMNS.has_key? function
@@ -46,8 +57,8 @@ class EventLog < ActiveRecord::Base
     INNER JOIN batches ON event_logs.batch_id = batches.id
               AND batches.first_event >= '#{from.to_formatted_s(:db)}'
               AND batches.first_event < '#{to.to_formatted_s(:db)}'
-    WHERE event_logs.log_source_id = #{request.id}
-          AND event_logs.log_source_type = 'Request'
+    WHERE event_logs.log_source_id = #{log_source.id}
+          AND event_logs.log_source_type = '#{log_source_class}'
     ORDER BY batches.first_event
 EOQ
 

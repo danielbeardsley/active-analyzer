@@ -5,6 +5,6 @@ module RequestsHelper
   end
   
   def action_column(record)
-    "<a href='#' onclick='GetGraphData(\"#{record.action}\");return false;'>#{record.action}</a>"
+    %|<a href='#' onclick='GetRequestData("#{record.action}");return false;'>#{record.action}</a>|
   end
 end
