@@ -14,7 +14,7 @@ class EventLog < ActiveRecord::Base
 
   def self.get_historical_data_for(options = {})
 
-    from = options[:from] || 8.weeks.ago
+    from = options[:from] || 2.weeks.ago
     to = options[:to] || Time.now
     from = from.beginning_of_day
     to = to.end_of_day
